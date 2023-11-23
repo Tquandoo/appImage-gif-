@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giphy Search App</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .search-container {
+        display: flex;
+        margin-bottom: 20px;
+    }
+
+    input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    #gifContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .gif {
+        margin: 10px;
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .gif img {
+        width: 100%;
+        height: auto;
+    }
+
+    .clear-button {
+        margin-top: 20px;
+        background-color: #f44336;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <h1>Giphy Search App</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Enter keywords...">
+            <button onclick="searchGif()">Search</button>
+        </div>
+        <div id="gifContainer"></div>
+        <button onclick="clearGifs()">Clear All</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function searchGif() {
+            const apiKey = "1shtVNazwwW7oO3NrAQu9r67qp6CExHZ";
+            const searchInput = document.getElementById("searchInput").value;
+            const gifContainer = document.getElementById("gifContainer");
+
+            // Clear existing gifs
+            gifContainer.innerHTML = "";
+
+            // Make a request to Giphy API to get a list of gifs
+            axios
+                .get(
+                    `http://api.giphy.com/v1/gifs/search?q=${searchInput}&api_key=${apiKey}&limit=1`
+                )
+                .then((response) => {
+                    console.log(response)
+                    const gifs = response.data.data;
+
+                    // Display each gif in the container
+                    gifs.forEach((gif) => {
+                        const imageUrl = gif.images.fixed_height.url;
+                        const gifElement = `<div class="gif"><img src="${imageUrl}" alt="${searchInput}"></div>`;
+                        gifContainer.innerHTML += gifElement;
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error fetching gifs:", error);
+                });
+        }
+
+        function clearGifs() {
+            document.getElementById("gifContainer").innerHTML = "";
+        }
+
+    </script>
+</body>
+
+</html>
